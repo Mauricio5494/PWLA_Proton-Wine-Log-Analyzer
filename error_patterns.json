@@ -19,7 +19,8 @@
     "assertion failed",
     "failed to load",
     "missing file",
-    "null pointer"
+    "null pointer",
+    "link failed"
   ],
   "warn": [
     "warning",

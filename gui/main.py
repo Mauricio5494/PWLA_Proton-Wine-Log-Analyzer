@@ -3,11 +3,11 @@
 PWLA - Proton Wine Log Analyzer
 ================================
 
-Interfaz gráfica para analizar archivos game.log de Call to Arms - Gates of Hell
-ejecutados bajo Proton/Wine. Resalta errores críticos, filtra por severidad y
-permite exportar reportes.
+GUI for analyzing game.log files from Call to Arms - Gates of Hell
+running under Proton/Wine. Highlights critical errors, filters by severity,
+and allows exporting reports.
 
-Depende solo de la biblioteca estándar de Python (tkinter).
+Depends only on the Python standard library (tkinter).
 """
 
 import subprocess
@@ -17,7 +17,7 @@ from pathlib import Path
 import sys
 import os
 
-# Colores de la interfaz
+# UI colors
 COLOR_BG = "#f5f5f5"
 COLOR_PANEL = "#ffffff"
 COLOR_HEADER = "#2c3e50"
@@ -29,7 +29,7 @@ COLOR_TEXT = "#333333"
 
 SCRIPTS_DIR = Path(__file__).resolve().parent.parent
 
-# Patrones de error conocidos en game.log de GEM2
+# Known error patterns in GEM2 game.log
 ERROR_PATTERNS = [
     ("critical", ["«", "EXCEPTION_ACCESS_VIOLATION", "fatal", "access violation"]),
     ("error", ["error", "unexpected token", "file not found", "file signature mismatch", "ctd", "crash"]),
@@ -97,7 +97,7 @@ class PWLAGUI:
         )
 
     def _build_ui(self):
-        # ── Título ──
+        # ── Title ──
         title_frame = ttk.Frame(self.root)
         title_frame.pack(fill=tk.X, padx=20, pady=(15, 5))
 
@@ -112,49 +112,49 @@ class PWLAGUI:
             style="Subtitle.TLabel",
         ).pack(side=tk.LEFT, padx=(10, 0))
 
-        # ── Selector de archivo ──
+        # ── File selector ──
         file_frame = ttk.Frame(self.root)
         file_frame.pack(fill=tk.X, padx=20, pady=(10, 5))
 
-        ttk.Label(file_frame, text="Archivo game.log:").pack(side=tk.LEFT)
+        ttk.Label(file_frame, text="game.log file:").pack(side=tk.LEFT)
         self.log_entry = ttk.Entry(file_frame, textvariable=self.log_path_var, width=60)
         self.log_entry.pack(side=tk.LEFT, padx=(10, 5), fill=tk.X, expand=True)
-        ttk.Button(file_frame, text="Examinar…", command=self._browse_log).pack(
+        ttk.Button(file_frame, text="Browse…", command=self._browse_log).pack(
             side=tk.LEFT, padx=(0, 5)
         )
 
         ttk.Checkbutton(
             file_frame,
-            text="Solo mostrar errores",
+            text="Show errors only",
             variable=self.only_errors_var,
             command=self._refresh_log,
         ).pack(side=tk.LEFT, padx=(15, 0))
 
-        # ── Botones ──
+        # ── Buttons ──
         btn_frame = ttk.Frame(self.root)
         btn_frame.pack(fill=tk.X, padx=20, pady=(5, 10))
 
         ttk.Button(
             btn_frame,
-            text="Abrir game.log",
+            text="Open game.log",
             style="Accent.TButton",
             command=self._open_log_external,
         ).pack(side=tk.LEFT, padx=(0, 8))
 
         ttk.Button(
             btn_frame,
-            text="Refrescar",
+            text="Refresh",
             command=self._refresh_log,
         ).pack(side=tk.LEFT, padx=(0, 8))
 
         ttk.Button(
             btn_frame,
-            text="Exportar reporte…",
+            text="Export report…",
             command=self._export_report,
         ).pack(side=tk.LEFT)
 
-        # ── Área de salida ──
-        out_frame = ttk.LabelFrame(self.root, text="Contenido de game.log")
+        # ── Output area ──
+        out_frame = ttk.LabelFrame(self.root, text="game.log content")
         out_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 15))
 
         self.output_log = scrolledtext.ScrolledText(
@@ -169,7 +169,7 @@ class PWLAGUI:
         )
         self.output_log.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        # Tags de color para la salida
+        # Color tags for output
         self.output_log.tag_configure("critical", foreground="#f44336", font=("Consolas", 10, "bold"))
         self.output_log.tag_configure("error", foreground="#ff5252")
         self.output_log.tag_configure("warn", foreground="#ff9800")
@@ -177,10 +177,10 @@ class PWLAGUI:
 
         self._refresh_log()
 
-    # ── Acciones ──
+    # ── Actions ──
     def _browse_log(self):
         f = filedialog.askopenfilename(
-            title="Seleccionar game.log",
+            title="Select game.log",
             filetypes=[("Log files", "*.log"), ("All files", "*.*")],
         )
         if f:
@@ -190,7 +190,7 @@ class PWLAGUI:
     def _open_log_external(self):
         path = self.log_path_var.get()
         if not path:
-            messagebox.showwarning("Sin archivo", "Seleccioná primero un archivo game.log.")
+            messagebox.showwarning("No file", "Select a game.log file first.")
             return
         try:
             if sys.platform.startswith("linux"):
@@ -198,7 +198,7 @@ class PWLAGUI:
             else:
                 os.startfile(path)  # type: ignore[attr-defined]
         except Exception as e:
-            messagebox.showerror("Error", f"No se pudo abrir el archivo:\n{e}")
+            messagebox.showerror("Error", f"Could not open file:\n{e}")
 
     def _classify_line(self, line: str):
         lower = line.lower()
@@ -214,7 +214,7 @@ class PWLAGUI:
         if not path:
             self.output_log.insert(
                 tk.END,
-                "Seleccioná un archivo game.log usando el botón 'Examinar…'\n",
+                "Select a game.log file using the 'Browse…' button.\n",
                 "info",
             )
             return
@@ -223,7 +223,7 @@ class PWLAGUI:
         if not p.exists():
             self.output_log.insert(
                 tk.END,
-                f"Archivo no encontrado:\n{path}\n",
+                f"File not found:\n{path}\n",
                 "error",
             )
             return
@@ -232,7 +232,7 @@ class PWLAGUI:
             with open(p, "r", encoding="utf-8", errors="replace") as f:
                 lines = f.readlines()
         except Exception as e:
-            self.output_log.insert(tk.END, f"Error leyendo game.log: {e}\n", "error")
+            self.output_log.insert(tk.END, f"Error reading game.log: {e}\n", "error")
             return
 
         only_errors = self.only_errors_var.get()
@@ -254,16 +254,16 @@ class PWLAGUI:
     def _export_report(self):
         path = self.log_path_var.get()
         if not path:
-            messagebox.showwarning("Sin archivo", "Seleccioná primero un archivo game.log.")
+            messagebox.showwarning("No file", "Select a game.log file first.")
             return
 
         p = Path(path)
         if not p.exists():
-            messagebox.showerror("Error", f"Archivo no encontrado:\n{path}")
+            messagebox.showerror("Error", f"File not found:\n{path}")
             return
 
         out = filedialog.asksaveasfilename(
-            title="Exportar reporte",
+            title="Export report",
             defaultextension=".txt",
             filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
         )
@@ -291,9 +291,9 @@ class PWLAGUI:
                 f.write("=" * 60 + "\n\n")
                 f.write("\n".join(report_lines))
 
-            messagebox.showinfo("Exportado", f"Reporte guardado en:\n{out}")
+            messagebox.showinfo("Exported", f"Report saved to:\n{out}")
         except Exception as e:
-            messagebox.showerror("Error", f"No se pudo exportar el reporte:\n{e}")
+            messagebox.showerror("Error", f"Could not export report:\n{e}")
 
 
 def main():

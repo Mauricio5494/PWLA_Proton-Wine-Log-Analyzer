@@ -1,0 +1,40 @@
+{
+  "critical": [
+    "«",
+    "EXCEPTION_ACCESS_VIOLATION",
+    "fatal",
+    "access violation",
+    "segmentation fault",
+    "sigsegv",
+    "panic",
+    "aborted"
+  ],
+  "error": [
+    "error",
+    "unexpected token",
+    "file not found",
+    "file signature mismatch",
+    "ctd",
+    "crash",
+    "assertion failed",
+    "failed to load",
+    "missing file",
+    "null pointer"
+  ],
+  "warn": [
+    "warning",
+    "advertencia",
+    "deprecated",
+    "deprecat",
+    "warn",
+    "caution"
+  ],
+  "info": [
+    "info",
+    "log",
+    "loading",
+    "initialized",
+    "starting",
+    "started"
+  ]
+}

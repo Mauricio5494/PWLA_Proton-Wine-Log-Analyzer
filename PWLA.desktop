@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=PWLA — Proton Wine Log Analyzer
+Comment=Offline game.log analyzer for Call to Arms - Gates of Hell mods on Proton/Wine
+Exec=bash -c 'cd "$(dirname "%k")" && python3 gui/main.py'
+Icon=text-x-python
+Terminal=false
+Type=Application
+Categories=Utility;Development;
+StartupNotify=true

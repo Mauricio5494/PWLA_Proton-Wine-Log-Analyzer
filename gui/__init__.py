@@ -1,0 +1,1 @@
+"""Paquete de la interfaz gráfica del PWLA (Proton Wine Log Analyzer)."""
